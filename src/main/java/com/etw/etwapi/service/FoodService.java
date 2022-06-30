@@ -13,7 +13,7 @@ import java.util.Optional;
 public class FoodService {
 
     private final FoodRepository foodRepository;
-    public final ResponseMap pickFood(long id){
+    public final ResponseMap<Food> pickFood(Long id){
         Optional<Food> optional = foodRepository.findById(id);
 
         optional.ifPresent(food -> {

@@ -18,7 +18,7 @@ import javax.persistence.Id;
 public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    Long id;
 
     String name;
     int pickCount;
