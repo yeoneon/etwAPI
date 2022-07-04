@@ -2,6 +2,7 @@ package com.etw.etwapi.api;
 
 import com.etw.etwapi.dto.ResponseMap;
 import com.etw.etwapi.dto.request.FoodPickDto;
+import com.etw.etwapi.dto.response.FoodDto;
 import com.etw.etwapi.model.Food;
 import com.etw.etwapi.service.FoodService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class FoodApi {
     }
 
     @GetMapping("/imgs")
-    public List<Food> foodImgListApi() {
+    public ResponseMap<List<FoodDto>> foodImgListApi() {
         return foodService.foodImgList();
     }
 }
