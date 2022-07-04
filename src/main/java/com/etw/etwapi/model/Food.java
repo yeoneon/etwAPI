@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -18,10 +19,12 @@ import javax.persistence.Id;
 public class Food {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    String name;
-    int pickCount;
-    String path;
+    private String name;
+    private int pickCount;
+    private String imgPath;
 
+    private LocalDateTime createDate;
+    private Character delYn;
 }

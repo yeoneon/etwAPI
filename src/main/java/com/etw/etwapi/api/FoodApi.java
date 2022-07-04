@@ -5,6 +5,7 @@ import com.etw.etwapi.dto.request.FoodPickDto;
 import com.etw.etwapi.model.Food;
 import com.etw.etwapi.service.FoodService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,8 @@ public class FoodApi {
     }
 
     @PutMapping("")
-    public ResponseMap<Food> update(@RequestBody FoodPickDto requestData){
-        System.out.println("id : " + requestData.getId());
-        return foodService.pickFood(requestData.getId());
+    public ResponseMap<Food> update(@RequestParam("id") Long id){
+        return foodService.pickFood(id);
     }
 
     @GetMapping("/imgs")
