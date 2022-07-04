@@ -7,6 +7,8 @@ import com.etw.etwapi.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/food")
@@ -23,5 +25,10 @@ public class FoodApi {
     public ResponseMap<Food> update(@RequestBody FoodPickDto requestData){
         System.out.println("id : " + requestData.getId());
         return foodService.pickFood(requestData.getId());
+    }
+
+    @GetMapping("/imgs")
+    public List<Food> foodImgListApi() {
+        return foodService.foodImgList();
     }
 }

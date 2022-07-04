@@ -22,5 +22,6 @@ public class Food {
 
     String name;
     int pickCount;
+    String path;
 
 }

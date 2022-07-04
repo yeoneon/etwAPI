@@ -6,6 +6,7 @@ import com.etw.etwapi.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,4 +28,14 @@ public class FoodService {
                 .data(null)
                 .build();
     };
+
+
+    /**
+     * 이미지 리스트 보내기
+     * TODO : 현재는 이미지 6개 뿐이라서
+     * 16,32,64 나눠야 한다.
+     */
+    public List<Food> foodImgList() {
+        return  foodRepository.findAll();
+    }
 }
