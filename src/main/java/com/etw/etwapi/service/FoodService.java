@@ -17,11 +17,12 @@ import java.util.Optional;
 public class FoodService {
 
     private final FoodRepository foodRepository;
-    public final ResponseMap<Food> pickFood(Long id){
+
+    public final ResponseMap<Food> pickFood(Long id) {
         Optional<Food> optional = foodRepository.findById(id);
 
         optional.ifPresent(food -> {
-            food.setPickCount(food.getPickCount()+1);
+            food.setPickCount(food.getPickCount() + 1);
             foodRepository.save(food);
         });
 
@@ -30,41 +31,37 @@ public class FoodService {
                 .message("Success")
                 .data(null)
                 .build();
-    };
-
+    }
 
     /**
      * 이미지 리스트 보내기
      * TODO : 현재는 이미지 6개 뿐이라서
      * 16,32,64 나눠야 한다.
      */
-    public ResponseMap<List<FoodDto>> foodImgList() {
+    public ResponseMap<List<FoodDto>> getFoodImgList() {
 
         List<Food> foods;
         List<FoodDto> foodsList;
-        try{
+        try {
             foods = foodRepository.findAll();
             foodsList = new ArrayList<>();
-
-            foods.stream().map(food ->
-                foodsList.add(FoodDto.builder()
+            for (Food food : foods) {
+                FoodDto foodDto = FoodDto.builder()
                         .id(food.getId())
                         .name(food.getName())
                         .imgPath(food.getImgPath())
                         .pickCount(food.getPickCount())
-                        .build())
-            );
-
-
-        } catch (Exception e){
+                        .build();
+                foodsList.add(foodDto);
+            }
+        } catch (Exception e) {
             return ResponseMap.<List<FoodDto>>builder()
                     .code(500)
                     .message(e.getMessage())
                     .data(null)
                     .build();
         }
-
-        return  ResponseMap.<List<FoodDto>>builder()
+        return ResponseMap.<List<FoodDto>>builder()
                 .code(200)
                 .message("SUCCESS")
                 .data(foodsList)

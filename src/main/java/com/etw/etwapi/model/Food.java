@@ -25,6 +25,6 @@ public class Food {
     private int pickCount;
     private String imgPath;
 
-    private LocalDateTime createDate;
-    private Character delYn;
+//    private LocalDateTime createDate;
+//    private Character delYn;
 }
