@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class FoodService {
+public class FoodService implements IdealWorldCup {
 
     private final FoodRepository foodRepository;
 
@@ -35,25 +35,27 @@ public class FoodService {
 
     /**
      * 이미지 리스트 보내기
-     * TODO : 현재는 이미지 6개 뿐이라서
-     * 16,32,64 나눠야 한다.
+     * 현재 16,32 나눠야 한다.
      */
-    public ResponseMap<List<FoodDto>> getFoodImgList() {
+    public ResponseMap<List<FoodDto>> getFoodImgList(int size) {
 
         List<Food> foods;
-        List<FoodDto> foodsList;
+        List<FoodDto> foodsDtoList;
+        List<Integer> rList = getRandomList(size);
         try {
             foods = foodRepository.findAll();
-            foodsList = new ArrayList<>();
-            for (Food food : foods) {
-                FoodDto foodDto = FoodDto.builder()
-                        .id(food.getId())
-                        .name(food.getName())
-                        .imgPath(food.getImgPath())
-                        .pickCount(food.getPickCount())
-                        .build();
-                foodsList.add(foodDto);
-            }
+            foodsDtoList = new ArrayList<>();
+
+            foods.stream().filter(food -> rList.contains(food.getId().intValue()))
+                    .forEach(food -> {
+                        FoodDto foodDto = FoodDto.builder()
+                                .id(food.getId())
+                                .name(food.getName())
+                                .imgPath(food.getImgPath())
+                                .pickCount(food.getPickCount())
+                                .build();
+                        foodsDtoList.add(foodDto);
+                    });
         } catch (Exception e) {
             return ResponseMap.<List<FoodDto>>builder()
                     .code(500)
@@ -64,7 +66,7 @@ public class FoodService {
         return ResponseMap.<List<FoodDto>>builder()
                 .code(200)
                 .message("SUCCESS")
-                .data(foodsList)
+                .data(foodsDtoList)
                 .build();
     }
 }

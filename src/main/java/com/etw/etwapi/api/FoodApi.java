@@ -5,6 +5,7 @@ import com.etw.etwapi.dto.response.FoodDto;
 import com.etw.etwapi.model.Food;
 import com.etw.etwapi.service.FoodService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class FoodApi {
         return foodService.pickFood(id);
     }
 
-    @GetMapping("")
-    public ResponseMap<List<FoodDto>> foodImgListApi() {
-        return foodService.getFoodImgList();
+    @GetMapping("/{size}")
+    public ResponseMap<List<FoodDto>> getFoodImgListApi(@PathVariable(value = "size") int game) {
+        return foodService.getFoodImgList(game);
     }
 }
