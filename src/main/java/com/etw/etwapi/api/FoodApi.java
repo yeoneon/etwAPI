@@ -23,7 +23,7 @@ public class FoodApi {
     }
 
     @GetMapping("/{size}")
-    public ResponseMap<List<FoodDto>> getFoodImgListApi(@PathVariable(value = "size") int game) {
-        return foodService.getFoodImgList(game);
+    public ResponseMap<List<FoodDto>> getFoodImgListApi(@PathVariable(value = "size") Long size) throws Throwable {
+        return foodService.getFoodImgList(size);
     }
 }

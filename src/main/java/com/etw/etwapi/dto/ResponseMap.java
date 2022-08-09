@@ -1,12 +1,14 @@
 package com.etw.etwapi.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@AllArgsConstructor
 @Builder
 public class ResponseMap<T> {
     private int code;
     private String message;
     private T data;
+
+
 }
