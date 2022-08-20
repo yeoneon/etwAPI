@@ -26,10 +26,6 @@ public class FoodService {
 
         return foodRepository.save(food).toFoodDto();
     }
-    /**
-     * 이미지 리스트 보내기
-     * 현재 16,32 나눠야 한다.
-     */
     public List<FoodDto> getFoodImgList(int size) throws CustomException {
         int foodTotalSize = getFoodTotalSize(size);
 
@@ -40,7 +36,7 @@ public class FoodService {
     private int getFoodTotalSize(int size) throws CustomException{
         int foodTotalSize = foodRepository.findAll().size();
 
-        if(foodTotalSize == 0){
+        if(isEmptySize(size)){
             throw new CustomException(FoodEnum.MSG_ERR_FAIL_GET_FOOD_INFO.getMsg());
         }
 
@@ -50,17 +46,25 @@ public class FoodService {
 
         return foodTotalSize;
     }
-    private List<FoodDto> randomFoodList(Set<Long> randomSet) {
-        return foodQuerydslRepository.findAllById(randomSet).stream()
+    private List<FoodDto> randomFoodList(Set<Long> randomSet) throws CustomException{
+        List<Food> foods = foodQuerydslRepository.findAllById(randomSet);
+
+        if(isEmptySize(foods.size())){
+            throw new CustomException(FoodEnum.MSG_ERR_FAIL_GET_FOOD_INFO.getMsg());
+        }
+
+        return foods.stream()
                 .map(food -> food.toFoodDto())
                 .collect(Collectors.toList());
     }
-
     private Food getFood(Long id) throws CustomException{
         return foodRepository.findById(id)
                 .orElseThrow(()-> new CustomException(FoodEnum.MSG_ERR_FAIL_GET_FOOD_INFO.getMsg()));
     }
     private boolean isNotCorrectSize(int foodSize, int matchSize) {
         return foodSize < matchSize;
+    }
+    private boolean isEmptySize(int foodTotalSize){
+        return foodTotalSize == 0;
     }
 }
