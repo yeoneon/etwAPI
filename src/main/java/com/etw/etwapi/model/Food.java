@@ -1,5 +1,6 @@
 package com.etw.etwapi.model;
 
+import com.etw.etwapi.dto.response.FoodDto;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -13,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 @Builder
 public class Food {
     @Id
@@ -24,6 +24,18 @@ public class Food {
     private int pickCount;
     private String imgPath;
 
-//    private LocalDateTime createDate;
-//    private Character delYn;
+    public Food addPickCount(){
+        this.pickCount++;
+        return this;
+    }
+
+    public FoodDto toFoodDto(){
+        return FoodDto
+                .builder()
+                .id(id)
+                .imgPath(imgPath)
+                .pickCount(pickCount)
+                .name(name)
+                .build();
+    }
 }

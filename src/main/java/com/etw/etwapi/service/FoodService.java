@@ -1,67 +1,69 @@
 package com.etw.etwapi.service;
 
 import com.etw.etwapi.common.CustomException;
-import com.etw.etwapi.common.RamdomNum;
-import com.etw.etwapi.dto.ResponseMap;
+import com.etw.etwapi.common.RandomNum;
 import com.etw.etwapi.dto.response.FoodDto;
+import com.etw.etwapi.enums.FoodEnum;
 import com.etw.etwapi.model.Food;
 import com.etw.etwapi.repository.FoodRepository;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FoodService {
-
     private final FoodRepository foodRepository;
-    private final RamdomNum ramdomNum;
 
+    public FoodDto updatePickCount(Long id) throws CustomException {
+        Food food = getFood(id)
+                .addPickCount();
 
-    public final ResponseMap<Food> pickFood(Long id) {
-        Optional<Food> optional = foodRepository.findById(id);
-        optional.ifPresent(food -> {
-            food.setPickCount(food.getPickCount() + 1);
-            foodRepository.save(food);
-        });
-        return ResponseMap.<Food>builder()
-                .code(200)
-                .message("Success")
-                .data(null)
-                .build();
+        return foodRepository.save(food).toFoodDto();
     }
-
     /**
      * 이미지 리스트 보내기
      * 현재 16,32 나눠야 한다.
      */
+    public List<FoodDto> getFoodImgList(int size) throws CustomException {
+        int foodTotalSize = getFoodTotalSize(size);
 
-    @AfterThrowing
-    public ResponseMap<List<FoodDto>> getFoodImgList(Long size) throws Throwable {
+        Set<Integer> randomSet = RandomNum.getRandomSet(size, foodTotalSize);
 
-        List<Food> foods = foodRepository.findAll();
-        List<FoodDto> foodsDtoList = new ArrayList<>();
-        List<Long> rList = ramdomNum.getRandomList(size);
-        foods.stream().filter(food -> rList.contains(food.getId()))
-                      .forEach(food ->foodsDtoList.add(new FoodDto(food)));
+        return randomFoodList(randomSet);
+    }
+    private int getFoodTotalSize(int size) throws CustomException{
+        int foodTotalSize = foodRepository.findAll().size();
 
-//
-//        return ResponseMap.<List<FoodDto>>builder()
-//                .code(500)
-//                .message(e.getMessage())
-//                .data(null)
-//                .build();
+        if(foodTotalSize == 0){
+            throw new CustomException(FoodEnum.MSG_ERR_FAIL_GET_FOOD_INFO.getMsg());
+        }
 
+        if(isNotCorrectSize(foodTotalSize, size)){
+            throw new CustomException(FoodEnum.MSG_ERR_IS_NOT_CORRECT_SIZE.getMsg());
+        }
 
-        return ResponseMap.<List<FoodDto>>builder()
-                .code(200)
-                .message("SUCCESS")
-                .data(foodsDtoList)
-                .build();
+        return foodTotalSize;
+    }
+    private List<FoodDto> randomFoodList(Set<Integer> randomSet) {
+        return randomSet.stream()
+                .map(num -> {
+                    try {
+                        return getFood(Long.valueOf(num)).toFoodDto();
+                    } catch (CustomException e) {
+                        throw new RuntimeException();
+                    }
+                })
+                .collect(Collectors.toList());
+    }
+    private Food getFood(Long id) throws CustomException{
+        return foodRepository.findById(id)
+                .orElseThrow(()-> new CustomException(FoodEnum.MSG_ERR_FAIL_GET_FOOD_INFO.getMsg()));
+    }
+    private boolean isNotCorrectSize(int foodSize, int matchSize) {
+        return foodSize < matchSize;
     }
 }

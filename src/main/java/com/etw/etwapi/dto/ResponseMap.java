@@ -6,9 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class ResponseMap<T> {
-    private int code;
+    private String code;
     private String message;
     private T data;
-
-
 }
